@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>เชิญร่วมงานแต่งงาน - SUMITAR & KRISSADA</title>
-<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#fff6fb;--ink:#33304a;
@@ -74,6 +74,35 @@ h2{
 }
 .btn.alt{background:transparent;color:#2f7fe0;border:1.5px solid #2f7fe0;box-shadow:none}
 
+/* ---------- Theme & Rainbow Style ---------- */
+.theme-box {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px dashed #ffd1e3;
+}
+.theme-text {
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: var(--ink);
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+.rainbow-bar {
+  width: 100%;
+  height: 14px;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #8a5be0, #3d8bf0, #17b4c4, #0fa57a, #feca57, #f2703a, #ee4d86);
+  margin: 14px 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.theme-hashtag {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
 /* ---------- Timeline ---------- */
 section:not(.hero)>.timeline{max-width:520px;text-align:left}
 .tl-item{position:relative;display:grid;grid-template-columns:78px 30px 1fr;padding-bottom:38px}
@@ -135,6 +164,14 @@ footer{
     <p id="message"></p><br>
     <p>📅 <span id="dateFull"></span></p>
     <p>📍 <span id="venue"></span></p>
+
+    <!-- ส่วนตรีมงานแบบไล่สีรุ้ง -->
+    <div class="theme-box">
+      <p class="theme-text" id="themeText"></p>
+      <div class="rainbow-bar"></div>
+      <p class="theme-hashtag" id="hashtag"></p>
+    </div>
+
     <a class="btn alt" id="mapBtn" target="_blank">เปิดแผนที่</a>
   </div>
 </section>
@@ -163,6 +200,11 @@ const CONFIG = {
     dateFull: "วันศุกร์ที่ 4 ธันวาคม 2569 เวลา 07:09 น.",
     venue: "อภิณพ รีสอร์ท แอนด์สปา สระบุรี",
     message: "ขอเรียนเชิญร่วมเป็นเกียรติและร่วมแสดงความยินดีในวันแต่งงานของเรา",
+    
+    // ข้อมูลธีมงานและแฮชแท็ก
+    themeText: "THEME : PLEASE WEAR THE COLOR YOU LOVE, BECAUSE WE LOVE EVERY COLOR JUST THE WAY YOU ARE 🌈",
+    hashtag: "#OFERNGROWOLDTOGETHER",
+
     titleCount: "นับถอยหลังสู่วันสำคัญ",
     labelD: "วัน", labelH: "ชั่วโมง", labelM: "นาที", labelS: "วินาที",
     done: "วันนี้คือวันสำคัญของเราแล้ว ♡",
@@ -205,6 +247,11 @@ function renderContent() {
   $('dateFull').textContent = data.dateFull;
   $('venue').textContent = data.venue;
   $('message').textContent = data.message;
+  
+  // Render Theme & Hashtag
+  $('themeText').textContent = data.themeText;
+  $('hashtag').textContent = data.hashtag;
+
   $('titleCount').textContent = data.titleCount;
   $('labelD').textContent = data.labelD;
   $('labelH').textContent = data.labelH;

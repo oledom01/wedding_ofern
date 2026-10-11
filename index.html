@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>เชิญร่วมงานแต่งงาน - SUMITAR & KRISSADA</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff6fb;--ink:#33304a;
+  --pink:#ee4d86;--orange:#f2703a;--yellow:#feca57;
+  --green:#0fa57a;--aqua:#17b4c4;--blue:#3d8bf0;--purple:#8a5be0;
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--ink);text-align:center;line-height:1.7}
+section{padding:56px 20px}
+section:not(.hero)>*{max-width:600px;margin-left:auto;margin-right:auto}
+
+/* ---------- Music Button ---------- */
+#musicBtn{
+  position:fixed;bottom:20px;left:20px;z-index:100;
+  width:48px;height:48px;border-radius:50%;border:none;
+  background:linear-gradient(135deg,var(--pink),var(--orange));
+  color:#fff;font-size:1.2rem;box-shadow:0 6px 16px rgba(238,77,134,0.4);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+
+/* ---------- Hero ---------- */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;color:#fff;
+  background:linear-gradient(rgba(0,0,0,.10),rgba(0,0,0,.24)),url(images/1.jpg) center/cover,linear-gradient(135deg,#17b4c4,#3d8bf0);
+}
+.hero small{letter-spacing:4px;font-weight:300}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.6rem,12vw,4.5rem);font-weight:400;margin:12px 0;line-height:1.15}
+.hero p{font-size:1.1rem}
+.hero small,.hero h1,.hero p{text-shadow:0 2px 14px rgba(0,0,0,.55),0 1px 3px rgba(0,0,0,.4)}
+
+/* ---------- Headings ---------- */
+h2{
+  width:fit-content;margin-bottom:20px;font-size:1.65rem;font-weight:500;line-height:1.4;
+  background:linear-gradient(90deg,#e8407f,#7b4fd6,#2f7fe0);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+/* ---------- Section Backgrounds ---------- */
+.count-sec{
+  background:
+    radial-gradient(circle at 8% 16%,rgba(238,77,134,.30) 0 34px,transparent 35px),
+    radial-gradient(circle at 93% 10%,rgba(254,202,87,.50) 0 26px,transparent 27px),
+    radial-gradient(circle at 12% 80%,rgba(15,165,122,.28) 0 30px,transparent 31px),
+    radial-gradient(circle at 90% 76%,rgba(61,139,240,.32) 0 38px,transparent 39px),
+    linear-gradient(135deg,#ffe0ec,#fff0c9 35%,#d7f6ec 68%,#d6e8ff);
+}
+.sec-details{background:linear-gradient(135deg,#d3f4f2,#dbeaff)}
+.sec-timeline{background:linear-gradient(135deg,#fff3d6,#ffe1ec)}
+.sec-gallery{background:linear-gradient(135deg,#d8f7e8,#d3ecff)}
+
+/* ---------- Countdown ---------- */
+.count{display:flex;gap:10px;justify-content:center}
+.count div{width:78px;padding:16px 4px;border-radius:16px;color:#fff;box-shadow:0 8px 18px rgba(0,0,0,.16)}
+.count b{display:block;font-size:2rem;font-weight:500;line-height:1.3}
+.count span{font-size:.82rem}
+.count div:nth-child(1){background:linear-gradient(135deg,#ee4d86,#f2703a)}
+.count div:nth-child(2){background:linear-gradient(135deg,#0fa57a,#0b8f86)}
+.count div:nth-child(3){background:linear-gradient(135deg,#3d8bf0,#2a6fd6)}
+.count div:nth-child(4){background:linear-gradient(135deg,#8a5be0,#6c43c8)}
+#done{color:var(--pink);font-weight:500}
+
+/* ---------- Card & Buttons ---------- */
+.card{background:#fff;border-radius:18px;padding:26px 22px;border-top:5px solid var(--orange);box-shadow:0 8px 24px rgba(61,139,240,.16)}
+.btn{
+  display:inline-block;margin-top:18px;padding:13px 32px;border-radius:50px;color:#fff;text-decoration:none;font-weight:500;
+  background:linear-gradient(135deg,#ee4d86,#f2703a);box-shadow:0 6px 16px rgba(238,77,134,.35);
+}
+.btn.alt{background:transparent;color:#2f7fe0;border:1.5px solid #2f7fe0;box-shadow:none}
+
+/* ---------- Timeline ---------- */
+section:not(.hero)>.timeline{max-width:520px;text-align:left}
+.tl-item{position:relative;display:grid;grid-template-columns:78px 30px 1fr;padding-bottom:38px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::after{content:"";position:absolute;left:91.5px;top:26px;bottom:-2px;width:3px;border-radius:3px;background:var(--c)}
+.tl-item:last-child::after{display:none}
+.tl-time{text-align:right;padding-right:10px;line-height:1.15;font-weight:500;color:var(--c)}
+.tl-hm{display:block;font-size:1.5rem}
+.tl-unit{display:block;font-size:.8rem}
+.tl-dot{position:relative;z-index:1;width:18px;height:18px;margin:5px auto 0;border-radius:50%;background:var(--c);border:4px solid #fff;box-shadow:0 0 0 3px var(--c)}
+.tl-body{padding-left:12px}
+.tl-title{font-size:1.1rem;font-weight:500;line-height:1.45}
+.tl-detail{font-size:.9rem;opacity:.8;margin-top:4px}
+.tl-item:nth-child(5n+1){--c:#ee4d86}
+.tl-item:nth-child(5n+2){--c:#f2703a}
+.tl-item:nth-child(5n+3){--c:#0fa57a}
+.tl-item:nth-child(5n+4){--c:#3d8bf0}
+.tl-item:nth-child(5n+5){--c:#8a5be0}
+
+/* ---------- Gallery ---------- */
+.gallery{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gallery img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:14px}
+
+footer{
+  padding:32px 20px 38px;font-size:.88rem;background:#fff0f6;color:var(--ink);
+  border-top:6px solid transparent;
+  border-image:linear-gradient(90deg,var(--pink),var(--orange),var(--yellow),var(--green),var(--aqua),var(--blue),var(--purple)) 1;
+}
+</style>
+</head>
+<body>
+
+<!-- Audio Background -->
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+<button id="musicBtn" onclick="toggleMusic()">🎵</button>
+
+<section class="hero">
+  <small id="subHeader">WEDDING INVITATION</small>
+  <h1 id="names">SUMITAR & KRISSADA</h1>
+  <p id="dateText"></p>
+</section>
+
+<section class="count-sec">
+  <h2 id="titleCount">นับถอยหลังสู่วันสำคัญ</h2>
+  <div class="count">
+    <div><b id="d">0</b><span id="labelD">วัน</span></div>
+    <div><b id="h">0</b><span id="labelH">ชั่วโมง</span></div>
+    <div><b id="m">0</b><span id="labelM">นาที</span></div>
+    <div><b id="s">0</b><span id="labelS">วินาที</span></div>
+  </div>
+  <p id="done" style="margin-top:16px"></p>
+</section>
+
+<section class="sec-details">
+  <h2 id="titleDetails">รายละเอียดงาน</h2>
+  <div class="card">
+    <p id="message"></p><br>
+    <p>📅 <span id="dateFull"></span></p>
+    <p>📍 <span id="venue"></span></p>
+    <a class="btn alt" id="mapBtn" target="_blank">เปิดแผนที่</a>
+  </div>
+</section>
+
+<section class="sec-timeline">
+  <h2 id="titleTimeline">กำหนดการและพิธี</h2>
+  <div class="timeline" id="timeline"></div>
+</section>
+
+<section class="sec-gallery">
+  <h2 id="titleGallery">ภาพพรีเวดดิ้ง</h2>
+  <div class="gallery" id="gallery"></div>
+</section>
+
+<footer id="footerText">ขอบคุณที่มาร่วมแบ่งปันความสุขกับเรา ♡</footer>
+
+<script>
+const CONFIG = {
+  names: "SUMITAR & KRISSADA",
+  eventDate: "2026-12-04T07:09:00+07:00",
+  mapLink: "https://maps.app.goo.gl/Kms3bzgt4T92NZVs9",
+  photoCount: 6,
+
+  content: {
+    subHeader: "WEDDING INVITATION",
+    dateFull: "วันศุกร์ที่ 4 ธันวาคม 2569 เวลา 07:09 น.",
+    venue: "อภิณพ รีสอร์ท แอนด์สปา สระบุรี",
+    message: "ขอเรียนเชิญร่วมเป็นเกียรติและร่วมแสดงความยินดีในวันแต่งงานของเรา",
+    titleCount: "นับถอยหลังสู่วันสำคัญ",
+    labelD: "วัน", labelH: "ชั่วโมง", labelM: "นาที", labelS: "วินาที",
+    done: "วันนี้คือวันสำคัญของเราแล้ว ♡",
+    titleDetails: "รายละเอียดงาน",
+    mapBtn: "เปิดแผนที่",
+    titleTimeline: "กำหนดการและพิธี",
+    titleGallery: "Pre-Wedding Gallery",
+    footer: "ขอบคุณที่มาร่วมแบ่งปันความสุขกับเรา ♡",
+    schedule: [
+      {time:"07:09 น.", title:"พิธีสงฆ์"},
+      {time:"08:09 น.", title:"พิธีแห่ขันหมาก"},
+      {time:"09:09 น.", title:"พิธีรับไหว้"},
+      {time:"09:39 น.", title:"พิธีหลั่งน้ำพระพุทธมนต์"},
+      {time:"18:00 น.", title:"รับประทานอาหาร (โต๊ะจีน)"}
+    ]
+  }
+};
+
+const $=id=>document.getElementById(id);
+
+// Music Handler
+const music = $('bgMusic');
+let isPlaying = false;
+function toggleMusic() {
+  if (isPlaying) { music.pause(); $('musicBtn').textContent = '🎵'; }
+  else { music.play(); $('musicBtn').textContent = '🔊'; }
+  isPlaying = !isPlaying;
+}
+document.addEventListener('click', function startAudio() {
+  if (!isPlaying) {
+    music.play().then(() => { isPlaying = true; $('musicBtn').textContent = '🔊'; }).catch(()=>{});
+  }
+}, { once: true });
+
+function renderContent() {
+  const data = CONFIG.content;
+  $('subHeader').textContent = data.subHeader;
+  $('names').textContent = CONFIG.names;
+  $('dateText').textContent = data.dateFull;
+  $('dateFull').textContent = data.dateFull;
+  $('venue').textContent = data.venue;
+  $('message').textContent = data.message;
+  $('titleCount').textContent = data.titleCount;
+  $('labelD').textContent = data.labelD;
+  $('labelH').textContent = data.labelH;
+  $('labelM').textContent = data.labelM;
+  $('labelS').textContent = data.labelS;
+  $('titleDetails').textContent = data.titleDetails;
+  $('mapBtn').textContent = data.mapBtn;
+  $('mapBtn').href = CONFIG.mapLink;
+  $('titleTimeline').textContent = data.titleTimeline;
+  $('titleGallery').textContent = data.titleGallery;
+  $('footerText').textContent = data.footer;
+
+  $('timeline').innerHTML = '';
+  data.schedule.forEach(s=>{
+    const d=document.createElement('div');d.className='tl-item';
+    const t=document.createElement('div');t.className='tl-time';
+    const parts=String(s.time).trim().split(/\s+/);
+    const hm=document.createElement('span');hm.className='tl-hm';hm.textContent=parts[0];t.appendChild(hm);
+    if(parts.length>1){const u=document.createElement('span');u.className='tl-unit';u.textContent=parts.slice(1).join(' ');t.appendChild(u)}
+    const dot=document.createElement('div');dot.className='tl-dot';
+    const b=document.createElement('div');b.className='tl-body';
+    const h=document.createElement('div');h.className='tl-title';h.textContent=s.title;b.appendChild(h);
+    if(s.detail){const p=document.createElement('div');p.className='tl-detail';p.textContent=s.detail;b.appendChild(p)}
+    d.append(t,dot,b);
+    $('timeline').appendChild(d);
+  });
+}
+
+// Initial Gallery Load
+$('gallery').innerHTML = '';
+for(let i=1;i<=CONFIG.photoCount;i++){
+  const img=new Image();img.src='images/'+i+'.jpg';img.loading='lazy';
+  img.onerror=()=>img.remove();$('gallery').appendChild(img);
+}
+
+// Countdown
+const target=new Date(CONFIG.eventDate).getTime();
+function tick(){
+  const diff=target-Date.now();
+  if(diff<=0){$('done').textContent=CONFIG.content.done;return}
+  $('d').textContent=Math.floor(diff/864e5);
+  $('h').textContent=Math.floor(diff%864e5/36e5);
+  $('m').textContent=Math.floor(diff%36e5/6e4);
+  $('s').textContent=Math.floor(diff%6e4/1e3);
+}
+tick();setInterval(tick,1000);
+
+renderContent();
+</script>
+</body>
+</html>

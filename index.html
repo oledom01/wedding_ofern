@@ -13,8 +13,29 @@
 }
 *{box-sizing:border-box;margin:0}
 body{font-family:'Prompt',sans-serif;background:var(--bg);color:var(--ink);text-align:center;line-height:1.7}
+body.locked{overflow:hidden}
 section{padding:56px 20px}
 section:not(.hero)>*{max-width:600px;margin-left:auto;margin-right:auto}
+
+/* ---------- Cover (แตะเพื่อเปิดการ์ด) ---------- */
+#cover{
+  position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;color:#fff;cursor:pointer;padding:20px;
+  background:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.4)),url(images/1.jpg) center/cover,linear-gradient(135deg,#17b4c4,#3d8bf0);
+  transition:opacity .7s;
+}
+#cover.hide{opacity:0;pointer-events:none}
+#cover small{letter-spacing:4px;font-weight:300;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+#cover h1{
+  font-family:'Playfair Display',serif;font-size:clamp(2.2rem,10vw,3.5rem);font-weight:400;
+  margin:10px 0 28px;line-height:1.2;text-shadow:0 2px 14px rgba(0,0,0,.55),0 1px 3px rgba(0,0,0,.4);
+}
+#cover .open-btn{
+  padding:13px 32px;border-radius:50px;font-weight:500;
+  background:linear-gradient(135deg,#ee4d86,#f2703a);box-shadow:0 6px 16px rgba(238,77,134,.4);
+  animation:pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 
 /* ---------- Music Button ---------- */
 #musicBtn{
@@ -133,10 +154,17 @@ footer{
 }
 </style>
 </head>
-<body>
+<body class="locked">
+
+<!-- หน้าปก: แตะเพื่อเปิดการ์ด + เริ่มเล่นเพลง -->
+<div id="cover" onclick="openInvite()">
+  <small>WEDDING INVITATION</small>
+  <h1>SUMITAR &amp; KRISSADA</h1>
+  <div class="open-btn">แตะเพื่อเปิดการ์ดเชิญ 💌</div>
+</div>
 
 <!-- Audio Background -->
-<audio id="bgMusic" loop>
+<audio id="bgMusic" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 <button id="musicBtn" onclick="toggleMusic()">🎵</button>
@@ -200,7 +228,7 @@ const CONFIG = {
     dateFull: "วันศุกร์ที่ 4 ธันวาคม 2569 เวลา 07:09 น.",
     venue: "อภิณพ รีสอร์ท แอนด์สปา สระบุรี",
     message: "ขอเรียนเชิญร่วมเป็นเกียรติและร่วมแสดงความยินดีในวันแต่งงานของเรา",
-    
+
     // ข้อมูลธีมงานและแฮชแท็ก
     themeText: "THEME : PLEASE WEAR THE COLOR YOU LOVE, BECAUSE WE LOVE EVERY COLOR JUST THE WAY YOU ARE 🌈",
     hashtag: "#OFERNGROWOLDTOGETHER",
@@ -225,20 +253,30 @@ const CONFIG = {
 
 const $=id=>document.getElementById(id);
 
-// Music Handler
+// ---------- Music Handler ----------
 const music = $('bgMusic');
+music.volume = 0.6;
 let isPlaying = false;
-function toggleMusic() {
-  if (isPlaying) { music.pause(); $('musicBtn').textContent = '🎵'; }
-  else { music.play(); $('musicBtn').textContent = '🔊'; }
-  isPlaying = !isPlaying;
-}
-document.addEventListener('click', function startAudio() {
-  if (!isPlaying) {
-    music.play().then(() => { isPlaying = true; $('musicBtn').textContent = '🔊'; }).catch(()=>{});
-  }
-}, { once: true });
 
+function setPlaying(state){
+  isPlaying = state;
+  $('musicBtn').textContent = state ? '🔊' : '🎵';
+}
+
+function toggleMusic(){
+  if (isPlaying) { music.pause(); setPlaying(false); }
+  else { music.play().then(()=>setPlaying(true)).catch(()=>{}); }
+}
+
+// กดหน้าปก -> เปิดการ์ด + เริ่มเล่นเพลง
+function openInvite(){
+  $('cover').classList.add('hide');
+  document.body.classList.remove('locked');
+  music.play().then(()=>setPlaying(true)).catch(()=>{});
+  setTimeout(()=>{ $('cover').style.display = 'none'; }, 700);
+}
+
+// ---------- Render ----------
 function renderContent() {
   const data = CONFIG.content;
   $('subHeader').textContent = data.subHeader;
@@ -247,7 +285,7 @@ function renderContent() {
   $('dateFull').textContent = data.dateFull;
   $('venue').textContent = data.venue;
   $('message').textContent = data.message;
-  
+
   // Render Theme & Hashtag
   $('themeText').textContent = data.themeText;
   $('hashtag').textContent = data.hashtag;

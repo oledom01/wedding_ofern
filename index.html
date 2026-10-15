@@ -31,12 +31,12 @@ section:not(.hero)>*{max-width:600px;margin-left:auto;margin-right:auto}
 #cover .slides{position:absolute;inset:0}
 #cover .slide{
   position:absolute;inset:0;background:center/cover no-repeat;
-  opacity:0;transform:scale(1);
+  opacity:0;transform:scale(1);will-change:opacity,transform;
   transition:opacity 1.5s ease-in-out,transform 0s linear 1.5s;
 }
 #cover .slide.active{
   opacity:1;transform:scale(1.1);
-  transition:opacity 1.5s ease-in-out,transform 7s ease-out;
+  transition:opacity 1.5s ease-in-out,transform 4.5s ease-out;
 }
 #cover::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.4))}
 #cover small,#cover h1,#cover .open-btn{position:relative;z-index:2}
@@ -180,7 +180,7 @@ footer{
 </div>
 
 <!-- Audio Background -->
-<audio id="bgMusic" loop preload="auto">
+<audio id="bgMusic" loop preload="none">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 <button id="musicBtn" onclick="toggleMusic()">🎵</button>
@@ -273,26 +273,48 @@ const $=id=>document.getElementById(id);
 const COVER_PHOTOS = [1,2,3,4,5,6];   // เลือกเลขรูปใน images/ ที่ต้องการใช้
 const COVER_INTERVAL = 3000;      // เวลาสลับรูป (มิลลิวินาที)
 const slideBox = $('coverSlides');
-COVER_PHOTOS.forEach(n=>{
+const slides = [];
+let curSlide = 0;
+
+function addSlide(n){
   const s=document.createElement('div');
   s.className='slide';
   s.style.backgroundImage='url(images/'+n+'.jpg)';
   slideBox.appendChild(s);
-});
-const slides=[...slideBox.children];
-let curSlide=0;
-if(slides.length) slides[0].classList.add('active');
-setInterval(()=>{
+  slides.push(s);
+  return s;
+}
+function preload(n){
+  return new Promise(res=>{
+    const im=new Image();
+    im.onload=()=>res(true);
+    im.onerror=()=>res(false);
+    im.src='images/'+n+'.jpg';
+  });
+}
+function showNext(){
   if(slides.length<2) return;
   slides[curSlide].classList.remove('active');
   curSlide=(curSlide+1)%slides.length;
   slides[curSlide].classList.add('active');
-}, COVER_INTERVAL);
+}
+
+// โหลดรูปล่วงหน้า: โชว์รูปแรกทันทีที่พร้อม แล้วเริ่มนับเวลาสลับหลังทุกรูปโหลดเสร็จ
+const loads = COVER_PHOTOS.map(n=>preload(n).then(ok=>ok?n:null));
+loads[0].then(n=>{ if(n) addSlide(n).classList.add('active'); });
+Promise.all(loads).then(list=>{
+  list.slice(1).filter(Boolean).forEach(addSlide);
+  if(slides.length && !slides.some(s=>s.classList.contains('active'))) slides[0].classList.add('active');
+  if(slides.length>1) setInterval(showNext, COVER_INTERVAL);
+  // รูปโหลดเสร็จแล้ว ค่อยเริ่มโหลดเพลงรอไว้ (ไม่แย่งแบนด์วิดท์กับรูป)
+  if(!opened){ music.preload='auto'; music.load(); }
+});
 
 // ---------- Music Handler ----------
 const music = $('bgMusic');
 music.volume = 0.6;
 let isPlaying = false;
+var opened = false;
 
 function setPlaying(state){
   isPlaying = state;
@@ -306,11 +328,27 @@ function toggleMusic(){
 
 // กดหน้าปก -> เปิดการ์ด + เริ่มเล่นเพลง
 function openInvite(){
+  opened = true;
   $('cover').classList.add('hide');
   document.body.classList.remove('locked');
   music.play().then(()=>setPlaying(true)).catch(()=>{});
   setTimeout(()=>{ $('cover').style.display = 'none'; }, 700);
 }
+
+// สลับแอป/ล็อกจอ/สลับแท็บ -> พักเพลง แล้วเล่นต่อเมื่อกลับมา (เฉพาะกรณีที่กำลังเล่นอยู่)
+let resumeAfterHidden = false;
+document.addEventListener('visibilitychange', ()=>{
+  if (document.hidden) {
+    if (isPlaying) {
+      resumeAfterHidden = true;
+      music.pause();
+      setPlaying(false);
+    }
+  } else if (resumeAfterHidden) {
+    resumeAfterHidden = false;
+    music.play().then(()=>setPlaying(true)).catch(()=>{});
+  }
+});
 
 // ---------- Render ----------
 function renderContent() {

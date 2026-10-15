@@ -21,10 +21,25 @@ section:not(.hero)>*{max-width:600px;margin-left:auto;margin-right:auto}
 #cover{
   position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;
   align-items:center;justify-content:center;color:#fff;cursor:pointer;padding:20px;
-  background:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.4)),url(images/1.jpg) center/cover,linear-gradient(135deg,#17b4c4,#3d8bf0);
+  background:linear-gradient(135deg,#17b4c4,#3d8bf0);
+  overflow:hidden;
   transition:opacity .7s;
 }
 #cover.hide{opacity:0;pointer-events:none}
+
+/* สไลด์เฟดสลับรูป + ซูมเข้าช้า ๆ */
+#cover .slides{position:absolute;inset:0}
+#cover .slide{
+  position:absolute;inset:0;background:center/cover no-repeat;
+  opacity:0;transform:scale(1);
+  transition:opacity 1.5s ease-in-out,transform 0s linear 1.5s;
+}
+#cover .slide.active{
+  opacity:1;transform:scale(1.1);
+  transition:opacity 1.5s ease-in-out,transform 7s ease-out;
+}
+#cover::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(rgba(0,0,0,.25),rgba(0,0,0,.4))}
+#cover small,#cover h1,#cover .open-btn{position:relative;z-index:2}
 #cover small{letter-spacing:4px;font-weight:300;text-shadow:0 2px 14px rgba(0,0,0,.55)}
 #cover h1{
   font-family:'Playfair Display',serif;font-size:clamp(2.2rem,10vw,3.5rem);font-weight:400;
@@ -158,6 +173,7 @@ footer{
 
 <!-- หน้าปก: แตะเพื่อเปิดการ์ด + เริ่มเล่นเพลง -->
 <div id="cover" onclick="openInvite()">
+  <div class="slides" id="coverSlides"></div>
   <small>WEDDING INVITATION</small>
   <h1>SUMITAR &amp; KRISSADA</h1>
   <div class="open-btn">แตะเพื่อเปิดการ์ดเชิญ 💌</div>
@@ -252,6 +268,26 @@ const CONFIG = {
 };
 
 const $=id=>document.getElementById(id);
+
+// ---------- Cover Slideshow ----------
+const COVER_PHOTOS = [1,2,3,4];   // เลือกเลขรูปใน images/ ที่ต้องการใช้
+const COVER_INTERVAL = 3000;      // เวลาสลับรูป (มิลลิวินาที)
+const slideBox = $('coverSlides');
+COVER_PHOTOS.forEach(n=>{
+  const s=document.createElement('div');
+  s.className='slide';
+  s.style.backgroundImage='url(images/'+n+'.jpg)';
+  slideBox.appendChild(s);
+});
+const slides=[...slideBox.children];
+let curSlide=0;
+if(slides.length) slides[0].classList.add('active');
+setInterval(()=>{
+  if(slides.length<2) return;
+  slides[curSlide].classList.remove('active');
+  curSlide=(curSlide+1)%slides.length;
+  slides[curSlide].classList.add('active');
+}, COVER_INTERVAL);
 
 // ---------- Music Handler ----------
 const music = $('bgMusic');

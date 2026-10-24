@@ -124,6 +124,10 @@ h2{
 }
 .btn.alt{background:transparent;color:#2f7fe0;border:1.5px solid #2f7fe0;box-shadow:none}
 
+/* ปุ่มแผนที่ (Google Maps + Apple Maps) */
+.map-btns{display:flex;flex-wrap:wrap;gap:0 12px;justify-content:center}
+.map-btns .btn{margin-top:14px;padding:12px 24px;-webkit-tap-highlight-color:transparent}
+
 /* ---------- Theme & Rainbow Style ---------- */
 .theme-box {
   margin-top: 20px;
@@ -230,7 +234,10 @@ footer{
       <p class="theme-hashtag" id="hashtag"></p>
     </div>
 
-    <a class="btn alt" id="mapBtn" target="_blank">เปิดแผนที่</a>
+    <!-- ปุ่มแผนที่: ไม่ใช้ target="_blank" เพื่อให้เปิดได้บน iPhone / in-app browser -->
+    <div class="map-btns">
+      <a class="btn alt" id="mapBtn" rel="noopener">เปิด Google Maps</a>
+    </div>
   </div>
 </section>
 
@@ -247,16 +254,24 @@ footer{
 <footer id="footerText">ขอบคุณที่มาร่วมแบ่งปันความสุขกับเรา ♡</footer>
 
 <script>
+const PLACE_NAME = "อภิณพ รีสอร์ท แอนด์สปา สระบุรี";
+
 const CONFIG = {
   names: "SUMITAR & KRISSADA",
   eventDate: "2026-12-04T07:09:00+07:00",
-  mapLink: "https://maps.app.goo.gl/Kms3bzgt4T92NZVs9",
+
+  // ลิงก์แบบเต็ม (เสถียรบน iPhone มากกว่า maps.app.goo.gl)
+  // ถ้ามีพิกัดแน่นอน ให้เปลี่ยน query เป็น "ละติจูด,ลองจิจูด" เช่น "14.5000,100.9000" จะปักหมุดตรงกว่า
+  mapLink: "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(PLACE_NAME),
+  // สำหรับ iPhone: เรียกแอป Google Maps โดยตรง (ใช้เมื่อเปิดจากเบราว์เซอร์ในแอป เช่น LINE/Facebook)
+  googleMapsAppLink: "comgooglemaps://?q=" + encodeURIComponent(PLACE_NAME),
+
   photoCount: 6,
 
   content: {
     subHeader: "WEDDING INVITATION",
     dateFull: "วันศุกร์ที่ 4 ธันวาคม 2569 เวลา 07:09 น.",
-    venue: "อภิณพ รีสอร์ท แอนด์สปา สระบุรี",
+    venue: PLACE_NAME,
     message: "ขอเรียนเชิญร่วมเป็นเกียรติและร่วมแสดงความยินดีในวันแต่งงานของเรา",
 
     // ข้อมูลธีมงานและแฮชแท็ก
@@ -267,7 +282,7 @@ const CONFIG = {
     labelD: "วัน", labelH: "ชั่วโมง", labelM: "นาที", labelS: "วินาที",
     done: "วันนี้คือวันสำคัญของเราแล้ว ♡",
     titleDetails: "รายละเอียดงาน",
-    mapBtn: "เปิดแผนที่",
+    mapBtn: "เปิด Google Maps",
     titleTimeline: "กำหนดการและพิธี",
     titleGallery: "Pre-Wedding Gallery",
     footer: "ขอบคุณที่มาร่วมแบ่งปันความสุขกับเรา ♡",
@@ -391,8 +406,11 @@ function renderContent() {
   $('labelM').textContent = data.labelM;
   $('labelS').textContent = data.labelS;
   $('titleDetails').textContent = data.titleDetails;
+
+  // ปุ่มแผนที่
   $('mapBtn').textContent = data.mapBtn;
   $('mapBtn').href = CONFIG.mapLink;
+
   $('titleTimeline').textContent = data.titleTimeline;
   $('titleGallery').textContent = data.titleGallery;
   $('footerText').textContent = data.footer;
@@ -433,6 +451,26 @@ function tick(){
 tick();setInterval(tick,1000);
 
 renderContent();
+
+// ---------- Google Maps button ----------
+// - Safari ปกติ: ลิงก์ https ของ Google Maps จะเปิดแอป Google Maps เองถ้าติดตั้งไว้ (ไม่มีก็เปิดเว็บ)
+// - เบราว์เซอร์ในแอป (LINE / Facebook / Instagram) บน iPhone: ลิงก์ข้างต้นมักไม่เปิดแอป
+//   จึงลองเรียกแอปโดยตรงด้วย comgooglemaps:// ถ้าไม่สำเร็จจะเปิดเว็บ Google Maps แทน
+$('mapBtn').addEventListener('click', function(e){
+  const ua = navigator.userAgent || '';
+  const isIOS = /iPhone|iPad|iPod/i.test(ua);
+  const inApp = /Line\/|FBAN|FBAV|FB_IAB|Instagram|Messenger/i.test(ua);
+  if (!(isIOS && inApp)) return;            // กรณีอื่นให้ลิงก์ทำงานตามปกติ
+  e.preventDefault();
+  const started = Date.now();
+  window.location.href = CONFIG.googleMapsAppLink;
+  setTimeout(function(){
+    // ถ้าหน้ายังอยู่ (แอปไม่เปิด) ให้ไปเปิดเว็บ Google Maps
+    if (!document.hidden && Date.now() - started < 3000) {
+      window.location.href = CONFIG.mapLink;
+    }
+  }, 1200);
+});
 </script>
 </body>
 </html>
